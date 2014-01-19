@@ -11,21 +11,29 @@ module Wisper
     end
 
     def broadcast(event, publisher, *args)
-      method_to_call = map_event_to_method(event)
-      if should_broadcast?(event) && listener.respond_to?(method_to_call) && publisher_in_scope?(publisher)
-        listener.public_send(method_to_call, *args)
+      if should_broadcast?(event, publisher)
+        broadcast_event(event, publisher, *args)
       end
     end
 
     private
 
+    def broadcast_event(event, publisher, *args)
+      listener.public_send(method_to_call(event), *args)
+    end
+
+    def should_broadcast?(event, publisher)
+      super(event) && listener.respond_to?(method_to_call(event)) && publisher_in_scope?(publisher)
+    end
+
+    def method_to_call(event)
+      @prefix + (with || event).to_s
+    end
+
     def publisher_in_scope?(publisher)
       allowed_classes.empty? || publisher.class.ancestors.any? { |ancestor| allowed_classes.include?(ancestor.to_s) }
     end
 
-    def map_event_to_method(event)
-      prefix + (with || event).to_s
-    end
 
     def stringify_prefix(_prefix)
       case _prefix
