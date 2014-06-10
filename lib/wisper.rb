@@ -6,6 +6,7 @@ require 'wisper/registration/object'
 require 'wisper/registration/block'
 require 'wisper/global_listeners'
 require 'wisper/temporary_listeners'
+require 'wisper/invokers/send'
 
 module Wisper
   def self.included(base)
