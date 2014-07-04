@@ -7,7 +7,7 @@ module WisperMatchers
       @event = event
     end
 
-    def matches?(block)
+    def matches?(&block)
       published = false
       @publisher.on(@event) { published = true }
 
